@@ -19,12 +19,11 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import Icon from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_icon.png";
-import Card from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_card.png";
-import Iphone from "/apps/MakemyBiodata/makemybiodata/src/assets/images/iphone14.webp";
+import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PhoneInput from "react-phone-number-input/input";
+import { useFormik } from "formik";
 const theme = createTheme();
 
 const CssTextField1 = styled(TextField)({
@@ -113,6 +112,14 @@ const Otppage = () => {
     event.preventDefault();
   };
 
+  const { values, errors, handleSubmit, handleBlur, handleChange, touched } =
+    useFormik({
+      initialValues: { phone: ""},
+      onSubmit: (values) => {
+        console.log("values:", values);
+      },
+    });
+
   // Define options for the country code select
   const countryOptions = [
     { value: "+1", label: "United States (+1)" },
@@ -128,7 +135,7 @@ const Otppage = () => {
   const [otp, setOTP] = useState(["", "", "", ""]);
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
 
-  const handleChange = (index, value) => {
+  const handleChange1 = (index, value) => {
     if (value.length === 1 && /^\d*$/.test(value)) {
       const newOTP = [...otp];
       newOTP[index] = value;
@@ -158,14 +165,13 @@ const Otppage = () => {
         sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Grid lg={12} md={12} sm={12} style={{}}>
-          <img src={Icon} style={Styles.image1}></img>
+          <img src={ImagePath.Icon} style={Styles.image1}></img>
         </Grid>
         <Grid lg={12} md={12} sm={12} style={Styles.grid11}>
-          <img src={Card} style={Styles.image2}></img>
-
-          <div style={Styles.blurOverlay}></div>
+          <img src={ImagePath.Card} style={Styles.image2}></img>
         </Grid>
       </Grid>
+      <div style={Styles.blurOverlay}></div>
 
       {/* <CssTextField1
             variant="outlined"
@@ -312,6 +318,7 @@ const Otppage = () => {
           </Typography>
         </div>
 
+<form>
         <Grid
           item
           //   container
@@ -343,13 +350,13 @@ const Otppage = () => {
                 variant="outlined"
                 size="large"
                 value={digit}
-                onChange={(e) => handleChange(index, e.target.value)}
+                onChange={(e) => handleChange1(index, e.target.value)}
                 inputRef={inputRefs[index]}
                 inputProps={{
                   maxLength: 1,
                   style: { textAlign: "center", zIndex: 1, fontSize: 14 },
                 }}
-                style={{ width: 75 }}
+                style={{ width: window.innerWidth > 1030 ? 75 : 50 }}
               />
             </Grid>
           ))}
@@ -358,6 +365,7 @@ const Otppage = () => {
         <Button
           variant="contained"
           color="primary"
+          type="submit"
           fullWidth
           style={Styles.button}
         >
@@ -365,6 +373,7 @@ const Otppage = () => {
             Verify
           </Typography>
         </Button>
+        </form>
         <a href="/" style={Styles.link2}>
           Already Have an account? &nbsp;
           <span style={{ color: "#86191b", fontWeight: "bold" }}>

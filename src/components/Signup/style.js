@@ -9,8 +9,9 @@ const styles = {
 
   grid1: {
     backgroundColor: "#FFD2EB",
-    backdropFilter: "blur(20px)",
     // display: { sm: "none", xs: "none" },
+    // backgroundImage: "linear-gradient(to bottom(#FFD2EB, transparent)",
+    zIndex: 1,
   },
 
   image1: {
@@ -33,15 +34,30 @@ const styles = {
   },
 
   blurOverlay: {
-    content: '""',
     position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "100%",
-    height: "50%",
-    // backgroundColor: "inherit",
-    backgroundColor: "rgba(655, 255, 255, 0.2)",
-    zIndex: 1,
+    display: "flex",
+    // bottom: 0,
+    // left: 0,
+    top: window.innerWidth > 1200 ? -55 : 80,
+    width:
+      window.innerWidth < 550 ? 0 : window.innerWidth > 860 ? "50%" : "54.5%",
+    // height:  window.innerWidth > 1290 ? "425px" : "108%",
+    height:
+      window.innerWidth == 1280 && window.innerHeight == 551
+        ? "130vh"
+        : window.innerWidth > 1020 && window.innerWidth < 1275
+        ? window.innerHeight == 1366
+          ? "94vh"
+          : "96vh"
+        : window.innerWidth > 1279
+        ? "107vh"
+        : "94vh",
+    // backgroundColor: "red",
+    background:
+      window.innerWidth > 730
+        ? "linear-gradient(to bottom,  transparent, transparent,  white)"
+        : 0,
+    zIndex: 10,
   },
 
   grid2: {

@@ -23,6 +23,7 @@ import IconButton from "@mui/material/IconButton";
 import Icon from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_icon.png";
 import Card from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_card.png";
 import Iphone from "/apps/MakemyBiodata/makemybiodata/src/assets/images/iphone14.webp";
+import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { newPasswordSchema } from "../../schemas/newPassword";
@@ -128,8 +129,8 @@ const ForgetPassword = ({ value, ...restProps }) => {
     initialValues: initialValues,
     validationSchema: forgetPasswordSchema,
     onSubmit: (values) => {
-        console.log("values:", values);
-      },
+      console.log("values:", values);
+    },
   });
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
@@ -165,15 +166,15 @@ const ForgetPassword = ({ value, ...restProps }) => {
         sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Grid lg={12} md={12} sm={12} style={{}}>
-          <img src={Icon} style={Styles.image1}></img>
+          <img src={ImagePath.Icon} style={Styles.image1}></img>
         </Grid>
         <Grid lg={12} md={12} sm={12} style={Styles.grid12}>
-          <img src={Iphone} style={Styles.image2}></img>
-          <img src={Card} style={Styles.image3}></img>
+          <img src={ImagePath.Iphone} style={Styles.image2}></img>
+          <img src={ImagePath.Card} style={Styles.image3}></img>
 
-          <div style={Styles.blurOverlay}></div>
         </Grid>
       </Grid>
+          <div style={Styles.blurOverlay}></div>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
         <form style={Styles.form}>

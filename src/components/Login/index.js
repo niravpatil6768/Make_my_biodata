@@ -18,12 +18,10 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import Icon from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_icon.png";
-import Card from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_card.png";
-import Iphone from "/apps/MakemyBiodata/makemybiodata/src/assets/images/iphone14.webp";
+import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { useFormik } from "formik";
+import { Field, useFormik } from "formik";
 import { signinSchema } from "../../schemas/signin";
 const theme = createTheme();
 
@@ -80,21 +78,40 @@ const initialValues = {
 
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [focusedField, setFocusedField] = React.useState(false);
+  const [submitted, setSubmitted] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  const { values, errors, handleSubmit, handleBlur, handleChange } = useFormik({
-    initialValues: initialValues,
-    validationSchema: signinSchema,
-    onSubmit: (values) => {
-      console.log("values: ", values);
-    },
-  });
+  const { values, errors, handleSubmit, handleBlur, handleChange, touched } =
+    useFormik({
+      initialValues: initialValues,
+      validationSchema: signinSchema,
+      onSubmit: (values) => {
+        setSubmitted(true);
+        console.log("values: ", values);
+      },
+    });
 
-  // console.log(Formik);
+  // Custom handleBlur function to update the focused field
+  const customHandleBlur = (fieldName) => (event) => {
+    setFocusedField(fieldName);
+    handleBlur(event);
+  };
+
+  // Custom handleChange function to update the focused field
+  const customHandleChange = (fieldName) => (event) => {
+    setFocusedField(fieldName);
+    handleChange(event);
+  };
+
+  const submitForm = () => {
+    // setFocusedField("");
+    handleSubmit();
+  };
 
   return (
     <Grid container style={Styles.container}>
@@ -107,15 +124,23 @@ const Login = () => {
         sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Grid lg={12} md={12} sm={12} style={{}}>
-          <img src={Icon} style={Styles.image1}></img>
+          <img src={ImagePath.Icon} style={Styles.image1}></img>
         </Grid>
         <Grid lg={12} md={12} sm={12} style={{}}></Grid>
         <Grid lg={12} md={12} sm={12} style={Styles.grid12}>
-          <img src={Iphone} style={Styles.image2}></img>
-          <img src={Card} style={Styles.image3}></img>
-
-          <div style={Styles.blurOverlay}></div>
+          <img src={ImagePath.Iphone} style={Styles.image2}></img>
+          <img src={ImagePath.Card} style={Styles.image3}></img>
         </Grid>
+      </Grid>
+
+      <Grid
+        style={Styles.blurOverlay}
+        sx={{ display: { xs: "none", sm: "flex" } }}
+      >
+        {/* <div
+          sx={{ display: { xs: "none", sm: "flex" } }}
+          style={Styles.blurOverlay}
+        ></div> */}
       </Grid>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
@@ -146,25 +171,36 @@ const Login = () => {
                 style: { fontSize: 14, alignItems: "center", display: "flex" },
               }}
             />
-            <h5 style={{ marginBottom: 15 }} className="form-error">
+            {/* <h5 style={{ marginBottom: 15 }} className="form-error">
               {errors.email}
-            </h5>
+            </h5> */}
+            {touched.email && errors.email && (
+              <h5 style={{ marginBottom: -20 }} className="form-error">
+                {errors.email}
+              </h5>
+            )}
           </div>
 
           <div
             style={{
-              marginTop: errors.password ? "0px" : "35px",
-              marginBottom: "30px",
+              marginTop:
+                focusedField == "email" && errors.email ? "0px" : "40px",
+              marginBottom: "20px",
             }}
           >
             <CustomFormControl
               size="small"
               variant="outlined"
               fullWidth
+              id="password"
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
               style={{ height: "1px" }}
             >
               <InputLabel
-                htmlFor="outlined-adornment-password"
+                htmlFor="password"
                 style={{ fontSize: 14, alignItems: "center", display: "flex" }}
               >
                 Enter your password
@@ -173,7 +209,7 @@ const Login = () => {
                 inputProps={{
                   style: { zIndex: 1, fontSize: 14 },
                 }}
-                id="outlined-adornment-password"
+                id="password"
                 type={showPassword ? "text" : "password"}
                 endAdornment={
                   <InputAdornment position="end">
@@ -191,9 +227,11 @@ const Login = () => {
                 label="Enter your password"
               />
             </CustomFormControl>
-            <h5 className="error-form" style={{ marginBottom: -10 }}>
-              {errors.password}
-            </h5>
+            {touched.password && errors.password && (
+              <h5 style={{ marginBottom: -15 }} className="form-error">
+                {errors.password}
+              </h5>
+            )}
           </div>
 
           <a href="/forgetpassword" style={Styles.link}>

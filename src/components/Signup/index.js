@@ -20,9 +20,7 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import Icon from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_icon.png";
-import Card from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_card.png";
-import Iphone from "/apps/MakemyBiodata/makemybiodata/src/assets/images/iphone14.webp";
+import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PhoneInput from "react-phone-number-input";
@@ -110,6 +108,7 @@ const initialValues = {
   name: "",
   fname: "",
   email: "",
+  phone: "",
   password: "",
 };
 
@@ -118,8 +117,18 @@ const Signup = ({ value, ...restProps }) => {
   const [phone, setPhone] = useState("");
   const [selectedCountry, setSelectedCountry] = useState(null);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  // const [touched, setTouched] = useState(false);
+  const [focusedField, setFocusedField] = useState("");
 
-  const { values, errors, handleSubmit, handleBlur, handleChange } = useFormik({
+  const {
+    values,
+    errors,
+    handleSubmit,
+    handleBlur,
+    handleChange,
+    touched,
+    isValid,
+  } = useFormik({
     initialValues: initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
@@ -127,17 +136,13 @@ const Signup = ({ value, ...restProps }) => {
     },
   });
 
+  // Use usePhoneInput hook to handle phone input field
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
     usePhoneInput({
       defaultCountry: "in",
-      value,
+      value: initialValues.phone,
       countries: defaultCountries,
-      // onChange: (data) => {
-      //   onChange(data.phone);
-      // },
     });
-
-  // console.log(Formik);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -159,23 +164,31 @@ const Signup = ({ value, ...restProps }) => {
         sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Grid lg={12} md={12} sm={12} style={{}}>
-          <img src={Icon} style={Styles.image1}></img>
+          <img src={ImagePath.Icon} style={Styles.image1}></img>
         </Grid>
         <Grid lg={12} md={12} sm={12} style={Styles.grid11}>
-          <img src={Card} style={Styles.image2}></img>
-
-          <div style={Styles.blurOverlay}></div>
+          <img src={ImagePath.Card} style={Styles.image2}></img>
         </Grid>
       </Grid>
+      <div style={Styles.blurOverlay}></div>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
-        <form style={Styles.form} onSubmit={handleSubmit}>
+        <form
+          style={Styles.form}
+          onSubmit={(e) => {
+            e.preventDefault(); // Prevent default form submission
+            if (isValid) {
+              // Check if the form is valid
+              handleSubmit(); // Submit the form
+            }
+          }}
+        >
           <h2 style={{ fontWeight: "bolder", marginBottom: -20 }}>
             Hello! Register to
           </h2>
           <h2>Get Started</h2>
 
-          <div>
+          <div style={{ marginBottom: 25 }}>
             <CssTextField1
               variant="outlined"
               label="Username"
@@ -196,12 +209,17 @@ const Signup = ({ value, ...restProps }) => {
                 style: { fontSize: 14, alignItems: "center", display: "flex" },
               }}
             />
-            <h5 style={{ marginBottom: -3 }} className="form-error">
+            {/* <h5 style={{ marginBottom: -3 }} className="form-error">
               {errors.name}
-            </h5>
+            </h5> */}
+            {touched.name && errors.name && (
+              <h5 style={{ marginBottom: -24 }} className="form-error">
+                {errors.name}
+              </h5>
+            )}
           </div>
 
-          <div>
+          <div style={{ marginBottom: 25 }}>
             <CssTextField1
               variant="outlined"
               label="Enter your full name"
@@ -222,12 +240,14 @@ const Signup = ({ value, ...restProps }) => {
                 style: { fontSize: 14, alignItems: "center", display: "flex" },
               }}
             />
-            <h5 style={{ marginBottom: -3 }} className="form-error">
-              {errors.fname}
-            </h5>
+            {touched.fname && errors.fname && (
+              <h5 style={{ marginBottom: -24 }} className="form-error">
+                {errors.fname}
+              </h5>
+            )}
           </div>
 
-          <div>
+          <div style={{ marginBottom: 25 }}>
             <CssTextField1
               variant="outlined"
               label="Enter your email"
@@ -248,132 +268,121 @@ const Signup = ({ value, ...restProps }) => {
                 style: { fontSize: 14, alignItems: "center", display: "flex" },
               }}
             />
-            <h5
-              style={{ marginBottom: errors.email ? 20 : 40 }}
-              className="form-error"
-            >
-              {errors.email}
-            </h5>
+            {touched.email && errors.email && (
+              <h5 className="form-error" style={{ marginBottom: -21 }}>
+                {errors.email}
+              </h5>
+            )}
           </div>
 
-          {/* <Select
-            options={countryOptions}
-            value={selectedCountry}
-            onChange={handleCountryChange}
-            placeholder="Select Country"
-          /> */}
-
-          {/* <CssPhoneField
-            placeholder="Enter phone number"
-            value={phone}
-            onChange={setPhone}
-            country="US"
-            international
-            inputProps={{
-              padding: "10px",
-              width: "100%",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-              height: "40px",
-            }}
-            inputStyle={{
-              padding: "10px",
-              width: "100%",
-              border: "1px solid #ced4da",
-              borderRadius: "4px",
-              height: "40px",
-            }}
-          /> */}
-
-          <CssPhoneField
-            variant="outlined"
-            label="Enter phone number"
-            color="primary"
-            size="small"
-            fullWidth
-            placeholder="Enter phone number"
-            value={inputValue}
-            onChange={handlePhoneValueChange}
-            type="tel"
-            inputRef={inputRef}
-            style={{ backgroundColor: "#f4f4f4" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment
-                  position="start"
-                  style={{
-                    marginRight: "2px",
-                    marginLeft: "-8px",
-                    zIndex: 1,
-                    color: "black",
-                  }}
-                >
-                  <Select
-                    style={{ zIndex: 1 }}
-                    MenuProps={{
-                      style: {
-                        height: "300px",
-                        width: "360px",
-                        top: "10px",
-                        left: "-34px",
-                      },
-                      transformOrigin: {
-                        vertical: "top",
-                        horizontal: "left",
-                      },
+          <div>
+            <CssPhoneField
+              variant="outlined"
+              label="Enter phone number"
+              // color="primary"
+              size="small"
+              fullWidth
+              id="phone"
+              name="phone"
+              placeholder="Enter phone number"
+              value={inputValue}
+              onChange={handlePhoneValueChange}
+              onBlur={handleBlur}
+              type="tel"
+              inputRef={inputRef}
+              style={{
+                backgroundColor: "#f4f4f4",
+                marginTop:
+                  focusedField === "email" && errors.email ? "0px" : "15px",
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment
+                    position="start"
+                    style={{
+                      marginRight: "2px",
+                      marginLeft: "-8px",
+                      zIndex: 1,
+                      color: "black",
                     }}
-                    sx={{
-                      width: "max-content",
-                      // Remove default outline (display only on focus)
-                      fieldset: {
-                        display: "none",
-                      },
-                      '&.Mui-focused:has(div[aria-expanded="false"])': {
-                        fieldset: {
-                          display: "block",
-                        },
-                      },
-                      // Update default spacing
-                      ".MuiSelect-select": {
-                        padding: "8px",
-                        paddingRight: "24px !important",
-                      },
-                      svg: {
-                        right: 0,
-                      },
-                    }}
-                    value={country.iso2}
-                    onChange={(e) => setCountry(e.target.value)}
-                    renderValue={(value) => (
-                      <FlagImage
-                        iso2={value}
-                        style={{ display: "flex", zIndex: 1 }}
-                      />
-                    )}
                   >
-                    {defaultCountries.map((c) => {
-                      const country = parseCountry(c);
-                      return (
-                        <MenuItem key={country.iso2} value={country.iso2}>
-                          <FlagImage
-                            iso2={country.iso2}
-                            style={{ marginRight: "8px", zIndex: 1 }}
-                          />
-                          <Typography marginRight="8px">
-                            {country.name}
-                          </Typography>
-                          <Typography color="gray">
-                            +{country.dialCode}
-                          </Typography>
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </InputAdornment>
-              ),
-            }}
-            {...restProps}
-          />
+                    <Select
+                      style={{ zIndex: 1 }}
+                      MenuProps={{
+                        style: {
+                          height: "300px",
+                          width: "360px",
+                          top: "10px",
+                          left: "-34px",
+                        },
+                        transformOrigin: {
+                          vertical: "top",
+                          horizontal: "left",
+                        },
+                      }}
+                      sx={{
+                        width: "max-content",
+                        // Remove default outline (display only on focus)
+                        fieldset: {
+                          display: "none",
+                        },
+                        '&.Mui-focused:has(div[aria-expanded="false"])': {
+                          fieldset: {
+                            display: "block",
+                          },
+                        },
+                        // Update default spacing
+                        ".MuiSelect-select": {
+                          padding: "8px",
+                          paddingRight: "24px !important",
+                        },
+                        svg: {
+                          right: 0,
+                        },
+                      }}
+                      value={country.iso2}
+                      onChange={(e) => {
+                        setCountry(e.target.value);
+                        // Update the phone field in formik with the new phone number including country code
+                        handleChange({
+                          target: {
+                            name: "phone",
+                            value: `${country.dialCode}${inputValue}`, // Concatenate country code and phone number
+                          },
+                        });
+                      }}
+                      renderValue={(value) => (
+                        <FlagImage
+                          iso2={value}
+                          style={{ display: "flex", zIndex: 1 }}
+                        />
+                      )}
+                    >
+                      {defaultCountries.map((c) => {
+                        const country = parseCountry(c);
+                        return (
+                          <MenuItem key={country.iso2} value={country.iso2}>
+                            <FlagImage
+                              iso2={country.iso2}
+                              style={{ marginRight: "8px", zIndex: 1 }}
+                            />
+                            <Typography marginRight="8px">
+                              {country.name}
+                            </Typography>
+                            <Typography color="gray">
+                              +{country.dialCode}
+                            </Typography>
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </InputAdornment>
+                ),
+              }}
+              {...restProps}
+            />
+            {touched.phone && errors.phone && <h5>{errors.phone}</h5>}
+          </div>
 
           <div
             style={{
@@ -391,7 +400,6 @@ const Signup = ({ value, ...restProps }) => {
               value={values.password}
               onChange={handleChange}
               onBlur={handleBlur}
-              // style={{ height: "5px" }}
             >
               <InputLabel
                 htmlFor="password"
@@ -421,12 +429,15 @@ const Signup = ({ value, ...restProps }) => {
                 label="Enter your password"
               />
             </CustomFormControl>
-            <h5
-              style={{ marginBottom: -3, marginTop: -1 }}
-              className="form-error"
-            >
-              {errors.password}
-            </h5>
+
+            {touched.password && errors.password && (
+              <h5
+                style={{ marginBottom: -3, marginTop: -1 }}
+                className="form-error"
+              >
+                {errors.password}
+              </h5>
+            )}
           </div>
 
           {/* <a href="#" style={Styles.link1}>

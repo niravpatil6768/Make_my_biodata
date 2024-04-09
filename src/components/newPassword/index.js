@@ -18,9 +18,7 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import Icon from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_icon.png";
-import Card from "/apps/MakemyBiodata/makemybiodata/src/assets/images/MakemyBiodata_card.png";
-import Iphone from "/apps/MakemyBiodata/makemybiodata/src/assets/images/iphone14.webp";
+import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
@@ -88,13 +86,14 @@ const NewPassword = () => {
     event.preventDefault();
   };
 
-  const { values, errors, handleSubmit, handleBlur, handleChange } = useFormik({
-    initialValues: initialValues,
-    validationSchema: newPasswordSchema,
-    onSubmit: (values) => {
-      console.log("values: ", values);
-    },
-  });
+  const { values, errors, handleSubmit, handleBlur, handleChange, touched } =
+    useFormik({
+      initialValues: initialValues,
+      validationSchema: newPasswordSchema,
+      onSubmit: (values) => {
+        console.log("values: ", values);
+      },
+    });
 
   // console.log(Formik);
 
@@ -109,15 +108,14 @@ const NewPassword = () => {
         sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Grid lg={12} md={12} sm={12} style={{}}>
-          <img src={Icon} style={Styles.image1}></img>
+          <img src={ImagePath.Icon} style={Styles.image1}></img>
         </Grid>
         <Grid lg={12} md={12} sm={12} style={Styles.grid12}>
-          <img src={Iphone} style={Styles.image2}></img>
-          <img src={Card} style={Styles.image3}></img>
-
-          <div style={Styles.blurOverlay}></div>
+          <img src={ImagePath.Iphone} style={Styles.image2}></img>
+          <img src={ImagePath.Card} style={Styles.image3}></img>
         </Grid>
       </Grid>
+      <div style={Styles.blurOverlay}></div>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
         <form onSubmit={handleSubmit} style={Styles.form}>
@@ -208,11 +206,13 @@ const NewPassword = () => {
               label="Enter your password"
             />
           </CustomFormControl>
-          <h5 className="form-error">{errors.password}</h5>
+          {touched.password && errors.password && (
+            <h5 className="form-error">{errors.password}</h5>
+          )}
 
           <div
             style={{
-              marginTop: errors.password ? "0px" : "35px",
+              marginTop: errors.password ? "30px" : "35px",
             }}
           >
             <CustomFormControl
@@ -254,7 +254,11 @@ const NewPassword = () => {
                 label="Enter your password"
               />
             </CustomFormControl>
-            <h5 className="form-error">{errors.confirmPassword}</h5>
+            {touched.confirmPassword && errors.confirmPassword && (
+              <h5 className="form-error" style={{ marginBottom: -5 }}>
+                {errors.confirmPassword}
+              </h5>
+            )}
           </div>
 
           <Button

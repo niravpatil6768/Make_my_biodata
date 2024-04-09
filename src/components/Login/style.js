@@ -1,12 +1,14 @@
+import { width } from "@mui/system";
+
 const styles = {
   container: {
     height: "100vh",
   },
 
-  gredientblur: {
-    background:
-      "linear-gradient(to bottom, Transparente 0%,Transparente 50%,red 50%,red 100%)",
-  },
+  // gredientblur: {
+  //   background:
+  //     "linear-gradient(to bottom, Transparente 0%,Transparente 50%,red 50%,red 100%)",
+  // },
 
   gridWrapper: {
     position: "relative",
@@ -14,7 +16,7 @@ const styles = {
 
   grid1: {
     backgroundColor: "#FFD2EB",
-    backdropFilter: "blur(20px)",
+    // backdropFilter: "blur(20px)",
   },
 
   image1: {
@@ -44,15 +46,30 @@ const styles = {
   },
 
   blurOverlay: {
-    content: '""',
     position: "absolute",
-    bottom: 0,
-    left: 0,
-    width: "100%",
-    height: "50%",
-    // backgroundColor: "inherit",
-    backgroundColor: "rgba(655, 255, 255, 0.2)",
-    zIndex: 1,
+    display: "flex",
+    // bottom: 0,
+    // left: 0,
+    top: window.innerWidth > 1200 ? -55 : 80,
+    width:
+      window.innerWidth < 550 ? 0 : window.innerWidth > 860 ? "50%" : "54.5%",
+    // height:  window.innerWidth > 1290 ? "425px" : "108%",
+    height:
+      window.innerWidth == 1280 && window.innerHeight == 551
+        ? "142vh"
+        : window.innerWidth > 1020 && window.innerWidth < 1285
+        ? window.innerHeight == 1366
+          ? "94vh"
+          : "108vh"
+        : window.innerWidth > 1282
+        ? "142vh"
+        : "94vh",
+    // backgroundColor: "red",
+    background:
+      window.innerWidth > 730
+        ? "linear-gradient(to bottom,  transparent, transparent,  white)"
+        : 0,
+    zIndex: 10,
   },
 
   grid2: {
