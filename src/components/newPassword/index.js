@@ -25,29 +25,6 @@ import { useFormik } from "formik";
 import { newPasswordSchema } from "../../schemas/newPassword";
 const theme = createTheme();
 
-const CssTextField1 = styled(TextField)({
-  "& label.Mui-focused": {
-    color: "grey",
-  },
-  "& .MuiInput-underline:after": {
-    borderBottomColor: "red",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "lightgrey",
-      borderRadius: 5,
-      borderWidth: 1,
-      background: "#f4f4f4",
-    },
-    "&:hover fieldset": {
-      borderColor: "#f35491",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#f35491",
-    },
-  },
-});
-
 const CustomFormControl = styled(FormControl)({
   "& label.Mui-focused": {
     color: "grey",
@@ -149,23 +126,6 @@ const NewPassword = () => {
               </h5>
             </Typography>
           </div>
-          {/* <CssTextField1
-            variant="outlined"
-            label="Enter your email"
-            fullWidth
-            margin="normal"
-            size="small"
-            value={values.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            style={{ height: "45px" }}
-            inputProps={{
-              style: { zIndex: 1, fontSize: 14 },
-            }}
-            InputLabelProps={{
-              style: { fontSize: 14, alignItems: "center", display: "flex" },
-            }}
-          /> */}
 
           <CustomFormControl
             size="small"

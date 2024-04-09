@@ -104,22 +104,23 @@ const CustomFormControl = styled(FormControl)({
   },
 });
 
-const initialValues = {
-  name: "",
-  fname: "",
-  email: "",
-  phone: "",
-  password: "",
-};
-
 const Signup = ({ value, ...restProps }) => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const [phone, setPhone] = useState("");
+
   const [selectedCountry, setSelectedCountry] = useState(null);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   // const [touched, setTouched] = useState(false);
   const [focusedField, setFocusedField] = useState("");
 
+  const [initialValues, setInitialValues] = useState({
+    name: "",
+    fname: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
+
+  // Use useFormik hook to manage form state and validation
   const {
     values,
     errors,
@@ -132,7 +133,7 @@ const Signup = ({ value, ...restProps }) => {
     initialValues: initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
-      console.log("values:", values);
+      console.log("Form values:", values); // Log form values on submission
     },
   });
 
@@ -140,9 +141,19 @@ const Signup = ({ value, ...restProps }) => {
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
     usePhoneInput({
       defaultCountry: "in",
-      value: initialValues.phone,
+      value: initialValues.phone, // Set initial value for phone input field
       countries: defaultCountries,
     });
+
+  // Update formik field value when inputValue changes
+  React.useEffect(() => {
+    handleChange({
+      target: {
+        name: "phone",
+        value: inputValue,
+      },
+    });
+  }, [inputValue]);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -177,10 +188,7 @@ const Signup = ({ value, ...restProps }) => {
           style={Styles.form}
           onSubmit={(e) => {
             e.preventDefault(); // Prevent default form submission
-            if (isValid) {
-              // Check if the form is valid
-              handleSubmit(); // Submit the form
-            }
+            handleSubmit(); // Submit the form
           }}
         >
           <h2 style={{ fontWeight: "bolder", marginBottom: -20 }}>
@@ -343,7 +351,7 @@ const Signup = ({ value, ...restProps }) => {
                       value={country.iso2}
                       onChange={(e) => {
                         setCountry(e.target.value);
-                        // Update the phone field in formik with the new phone number including country code
+                        // Update phone field value in formik with the selected country code and phone number
                         handleChange({
                           target: {
                             name: "phone",
@@ -381,7 +389,9 @@ const Signup = ({ value, ...restProps }) => {
               }}
               {...restProps}
             />
-            {touched.phone && errors.phone && <h5>{errors.phone}</h5>}
+            {touched.phone && errors.phone && (
+              <h5 style={{ marginTop: 0 }}>{errors.phone}</h5>
+            )}
           </div>
 
           <div

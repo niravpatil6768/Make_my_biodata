@@ -37,54 +37,8 @@ import {
 } from "react-international-phone";
 import { useFormik } from "formik";
 import { forgetPasswordSchema } from "../../schemas/forgetPassword";
-// import "react-phone-input-2/lib/style.css";
-const theme = createTheme();
+import { Link } from "react-router-dom";
 
-const CssTextField1 = styled(TextField)({
-  "& label.Mui-focused": {
-    color: "grey",
-  },
-  "& .MuiInput-underline:after": {
-    borderBottomColor: "red",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "lightgrey",
-      borderRadius: 5,
-      borderWidth: 1,
-      background: "#f4f4f4",
-    },
-    "&:hover fieldset": {
-      borderColor: "#f35491",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#f35491",
-    },
-  },
-});
-
-const CustomFormControl = styled(FormControl)({
-  "& label.Mui-focused": {
-    color: "grey",
-  },
-  "& .MuiInput-underline:after": {
-    // borderBottomColor: "red",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "lightgrey",
-      borderRadius: 5,
-      borderWidth: 1,
-      background: "#f4f4f4",
-    },
-    "&:hover fieldset": {
-      borderColor: "#f35491",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#f35491",
-    },
-  },
-});
 
 const CssPhoneField = styled(TextField)({
   "& label.Mui-focused": {
@@ -113,41 +67,35 @@ const initialValues = {
 };
 
 const ForgetPassword = ({ value, ...restProps }) => {
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [valid, setValid] = useState(true);
+  
 
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [confirmPassword, setConfirmPassword] = React.useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickConfirmPassword = () => setConfirmPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const { values, errors, handleChange, handleSubmit, handleBlur } = useFormik({
-    initialValues: initialValues,
-    validationSchema: forgetPasswordSchema,
-    onSubmit: (values) => {
-      console.log("values:", values);
-    },
-  });
+  const { values, errors, handleChange, handleSubmit, handleBlur, touched } =
+    useFormik({
+      initialValues: initialValues,
+      validationSchema: forgetPasswordSchema,
+      onSubmit: (values) => {
+        console.log("values:", values);
+      },
+    });
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
     usePhoneInput({
       defaultCountry: "in",
-      value,
+      value: initialValues.phone,
       countries: defaultCountries,
       // onChange: (data) => {
       //   onChange(data.phone);
       // },
     });
 
-  //   const handleChange = (event) => {
-  //     const input = event.target.value;
-  //     setPhoneNumber(input);
-  //     setValid(validatePhoneNumber(input));
-  //   };
+  React.useEffect(() => {
+    handleChange({
+      target: {
+        name: "phone",
+        value: inputValue,
+      },
+    });
+  }, [inputValue]);
 
   const validatePhoneNumber = (phoneNumber) => {
     const phoneNumberPattern = /^\d{10}$/;
@@ -171,13 +119,18 @@ const ForgetPassword = ({ value, ...restProps }) => {
         <Grid lg={12} md={12} sm={12} style={Styles.grid12}>
           <img src={ImagePath.Iphone} style={Styles.image2}></img>
           <img src={ImagePath.Card} style={Styles.image3}></img>
-
         </Grid>
       </Grid>
-          <div style={Styles.blurOverlay}></div>
+      <div style={Styles.blurOverlay}></div>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
-        <form style={Styles.form}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit();
+          }}
+          style={Styles.form}
+        >
           <div
             style={{
               display: "flex",
@@ -215,10 +168,13 @@ const ForgetPassword = ({ value, ...restProps }) => {
             label="Enter phone number"
             color="primary"
             size="small"
+            id="phone"
+            name="phone"
             fullWidth
             placeholder="Enter phone number"
             value={inputValue}
             onChange={handlePhoneValueChange}
+            onBlur={handleBlur}
             type="tel"
             inputRef={inputRef}
             style={{ backgroundColor: "#f4f4f4" }}
@@ -268,7 +224,15 @@ const ForgetPassword = ({ value, ...restProps }) => {
                       },
                     }}
                     value={country.iso2}
-                    onChange={(e) => setCountry(e.target.value)}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                      handleChange({
+                        target: {
+                          name: "phone",
+                          value: `${country.dialCode}${inputValue}`,
+                        },
+                      });
+                    }}
                     renderValue={(value) => (
                       <FlagImage
                         iso2={value}
@@ -299,6 +263,10 @@ const ForgetPassword = ({ value, ...restProps }) => {
             }}
             {...restProps}
           />
+          {touched.phone && errors.phone && (
+            <h5 style={{ marginTop: 0 }}>{errors.phone}</h5>
+          )}
+
 
           <Button
             variant="contained"
@@ -311,6 +279,7 @@ const ForgetPassword = ({ value, ...restProps }) => {
               Send Code
             </Typography>
           </Button>
+          
           <a href="/" style={Styles.link1}>
             Remember Password? &nbsp;
             <span style={{ color: "#86191b", fontWeight: "bold" }}>Login</span>

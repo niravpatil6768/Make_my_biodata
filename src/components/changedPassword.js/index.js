@@ -14,58 +14,6 @@ import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 // import "react-phone-input-2/lib/style.css";
-const theme = createTheme();
-
-const CssTextField1 = styled(TextField)({
-  "& label.Mui-focused": {
-    color: "grey",
-  },
-  "& .MuiInput-underline:after": {
-    borderBottomColor: "red",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "lightgrey",
-      borderRadius: 5,
-      borderWidth: 1,
-      background: "#f4f4f4",
-    },
-    "&:hover fieldset": {
-      borderColor: "#f35491",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#f35491",
-    },
-  },
-});
-
-const CustomFormControl = styled(FormControl)({
-  "& label.Mui-focused": {
-    color: "grey",
-  },
-  "& .MuiInput-underline:after": {
-    // borderBottomColor: "red",
-  },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": {
-      borderColor: "lightgrey",
-      borderRadius: 5,
-      borderWidth: 1,
-      background: "#f4f4f4",
-    },
-    "&:hover fieldset": {
-      borderColor: "#f35491",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#f35491",
-    },
-  },
-});
-
-const initialValues = {
-  password: "",
-  confirmPassword: "",
-};
 
 const ChangedPassword = () => {
   return (
@@ -81,12 +29,7 @@ const ChangedPassword = () => {
         <Grid lg={12} md={12} sm={12} style={{}}>
           <img src={ImagePath.Icon} style={Styles.image1}></img>
         </Grid>
-        <Grid lg={12} md={12} sm={12} style={Styles.grid12}>
-          {/* <img src={Iphone} style={Styles.image2}></img>
-          <img src={Card} style={Styles.image3}></img>
-
-          <div style={Styles.blurOverlay}></div> */}
-        </Grid>
+        <Grid lg={12} md={12} sm={12} style={Styles.grid12}></Grid>
       </Grid>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
@@ -132,7 +75,7 @@ const ChangedPassword = () => {
               }}
             >
               <h5 style={{ fontWeight: "bold", color: "grey" }}>
-                Your password has been changed success fully.
+                Your password has been changed successfully.
               </h5>
             </Typography>
           </div>
