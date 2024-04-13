@@ -108,12 +108,6 @@ const Login = () => {
             console.log(response.message);
             const loginerror = response.message;
             setError(loginerror);
-          }  else if (response.status === "fail") {
-            // Check if the response has an 'error' property
-            console.log("login failed: ", response);
-            console.log(response.message);
-            const loginerror = response.message;
-            setError(loginerror);
           }
         } catch (error) {
           // Handle errors from the network request
