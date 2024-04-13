@@ -64,7 +64,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "end",
     display: "flex",
-    padding: window.innerWidth >= 860 ? 125 : 50,
+    padding: window.innerWidth >= 860 ? 125 : window.innerWidth < 300 ? 15 : 50,
   },
 
   form: {
@@ -100,8 +100,14 @@ const styles = {
     textDecoration: "none",
     display: "flex",
     justifyContent: "center",
-    height: "50px",
+    height: "35%",
     fontSize: 14,
+  },
+
+  link2div: {
+    display: "flex",
+    justifyContent: "center",
+    height: "50px",
   },
 };
 

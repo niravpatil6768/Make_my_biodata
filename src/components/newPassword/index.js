@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Grid,
@@ -23,6 +23,9 @@ import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useFormik } from "formik";
 import { newPasswordSchema } from "../../schemas/newPassword";
+import { useNavigate } from "react-router-dom";
+import { getUserId } from "../../utils/localStorage";
+import { resetPasswordService } from "../../services/ApiService";
 const theme = createTheme();
 
 const CustomFormControl = styled(FormControl)({
@@ -50,14 +53,17 @@ const CustomFormControl = styled(FormControl)({
 
 const initialValues = {
   password: "",
-  confirmPassword: "",
+  password_confirmation: "",
+  id: getUserId(),
 };
 
 const NewPassword = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [confirmPassword, setConfirmPassword] = React.useState(false);
+  const [error, setError] = useState(null);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickConfirmPassword = () => setConfirmPassword((show) => !show);
+  const navigate = useNavigate();
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -67,8 +73,21 @@ const NewPassword = () => {
     useFormik({
       initialValues: initialValues,
       validationSchema: newPasswordSchema,
-      onSubmit: (values) => {
+      onSubmit: async (values) => {
         console.log("values: ", values);
+        try {
+          console.log("in service");
+          const response = await resetPasswordService(values);
+          if (response.status === "success") {
+            console.log("successfully changed password: ", response);
+            navigate("/changedpassword");
+          } else if (response.status === "fail") {
+            console.log("error in change password: ", response);
+            setError(response.message);
+          }
+        } catch (error) {
+          console.log("error in change password: ", error);
+        }
       },
     });
 
@@ -125,6 +144,7 @@ const NewPassword = () => {
                 <br /> previously used.{" "}
               </h5>
             </Typography>
+            {error && <h5 style={{ color: "red" }}>{error}</h5>}
           </div>
 
           <CustomFormControl
@@ -179,15 +199,15 @@ const NewPassword = () => {
               size="small"
               variant="outlined"
               fullWidth
-              id="confirmPassword"
-              name="confirmPassword"
-              value={values.confirmPassword}
+              id="password_confirmation"
+              name="password_confirmation"
+              value={values.password_confirmation}
               onChange={handleChange}
               onBlur={handleBlur}
               style={{ height: "6px" }}
             >
               <InputLabel
-                htmlFor="confirmPassword"
+                htmlFor="password_confirmation"
                 style={{ fontSize: 14, alignItems: "center", display: "flex" }}
               >
                 Confirm Password
@@ -196,7 +216,7 @@ const NewPassword = () => {
                 inputProps={{
                   style: { zIndex: 1, fontSize: 14 },
                 }}
-                id="confirmPassword"
+                id="password_confirmation"
                 type={confirmPassword ? "text" : "password"}
                 endAdornment={
                   <InputAdornment position="end">
@@ -214,9 +234,9 @@ const NewPassword = () => {
                 label="Enter your password"
               />
             </CustomFormControl>
-            {touched.confirmPassword && errors.confirmPassword && (
+            {touched.password_confirmation && errors.password_confirmation && (
               <h5 className="form-error" style={{ marginBottom: -5 }}>
-                {errors.confirmPassword}
+                {errors.password_confirmation}
               </h5>
             )}
           </div>
@@ -228,7 +248,12 @@ const NewPassword = () => {
             fullWidth
             style={Styles.Button}
           >
-            <Typography style={{ fontSize: 20, fontWeight: "normal" }}>
+            <Typography
+              style={{
+                fontSize: window.innerWidth < 300 ? 15 : 20,
+                fontWeight: "normal",
+              }}
+            >
               Reset Password
             </Typography>
           </Button>

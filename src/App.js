@@ -7,6 +7,7 @@ import Otppage from "./components/OTPpage";
 import NewPassword from "./components/newPassword";
 import ForgetPassword from "./components/forgetPassword";
 import ChangedPassword from "./components/changedPassword.js";
+import HomeScreen from "./components/HomeScreen/index.js";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/resetpassword" element={<NewPassword />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/changedpassword" element={<ChangedPassword />} />
+        <Route path="/homepage" element={<HomeScreen/>}/>
       </Routes>
     </BrowserRouter>
   );

@@ -21,9 +21,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
 import ImagePath from "../../assets/images";
-import { UseMediaQuery } from "@mui/material";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import PhoneInput from "react-phone-number-input";
+import { registerService } from "../../services/ApiService";
 import "react-international-phone/style.css";
 import {
   defaultCountries,
@@ -34,7 +32,6 @@ import {
 import "react-phone-number-input/style.css";
 import { useFormik } from "formik";
 import { signUpSchema } from "../../schemas/signup";
-const theme = createTheme();
 
 const CssTextField1 = styled(TextField)({
   "& label.Mui-focused": {
@@ -106,18 +103,15 @@ const CustomFormControl = styled(FormControl)({
 
 const Signup = ({ value, ...restProps }) => {
   const [showPassword, setShowPassword] = React.useState(false);
-
-  const [selectedCountry, setSelectedCountry] = useState(null);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  // const [touched, setTouched] = useState(false);
   const [focusedField, setFocusedField] = useState("");
-
   const [initialValues, setInitialValues] = useState({
+    username: "",
     name: "",
-    fname: "",
     email: "",
     phone: "",
     password: "",
+    country_code: "",
   });
 
   // Use useFormik hook to manage form state and validation
@@ -132,8 +126,14 @@ const Signup = ({ value, ...restProps }) => {
   } = useFormik({
     initialValues: initialValues,
     validationSchema: signUpSchema,
-    onSubmit: (values) => {
-      console.log("Form values:", values); // Log form values on submission
+    onSubmit: async (values) => {
+      try {
+        console.log("Form values:", values.phone);
+        const response = await registerService(values);
+        console.log("User registered successfully:", response);
+      } catch (error) {
+        console.error("Error submitting form:", error);
+      }
     },
   });
 
@@ -141,7 +141,7 @@ const Signup = ({ value, ...restProps }) => {
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
     usePhoneInput({
       defaultCountry: "in",
-      value: initialValues.phone, // Set initial value for phone input field
+      value: initialValues.phone.replace(/\D/g, ""), // Set initial value for phone input field
       countries: defaultCountries,
     });
 
@@ -150,18 +150,22 @@ const Signup = ({ value, ...restProps }) => {
     handleChange({
       target: {
         name: "phone",
-        value: inputValue,
+        value: inputValue.replace(/\D/g, "").slice(-10),
+      },
+    });
+  }, [inputValue]);
+
+  React.useEffect(() => {
+    handleChange({
+      target: {
+        name: "country_code",
+        value: inputValue.replace(/\D/g, "").slice(0, 1),
       },
     });
   }, [inputValue]);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
-  };
-
-  // Handle change in country code selection
-  const handleCountryChange = (selectedOption) => {
-    setSelectedCountry(selectedOption);
   };
 
   return (
@@ -202,10 +206,10 @@ const Signup = ({ value, ...restProps }) => {
               label="Username"
               fullWidth
               margin="normal"
-              name="name"
-              id="name"
+              name="username"
+              id="username"
               autoComplete="off"
-              value={values.name}
+              value={values.username}
               onChange={handleChange}
               onBlur={handleBlur}
               size="small"
@@ -217,12 +221,10 @@ const Signup = ({ value, ...restProps }) => {
                 style: { fontSize: 14, alignItems: "center", display: "flex" },
               }}
             />
-            {/* <h5 style={{ marginBottom: -3 }} className="form-error">
-              {errors.name}
-            </h5> */}
-            {touched.name && errors.name && (
+
+            {touched.username && errors.username && (
               <h5 style={{ marginBottom: -24 }} className="form-error">
-                {errors.name}
+                {errors.username}
               </h5>
             )}
           </div>
@@ -233,10 +235,10 @@ const Signup = ({ value, ...restProps }) => {
               label="Enter your full name"
               fullWidth
               margin="normal"
-              name="fname"
-              id="fname"
+              name="name"
+              id="name"
               autoComplete="off"
-              value={values.fname}
+              value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
               size="small"
@@ -248,9 +250,9 @@ const Signup = ({ value, ...restProps }) => {
                 style: { fontSize: 14, alignItems: "center", display: "flex" },
               }}
             />
-            {touched.fname && errors.fname && (
+            {touched.name && errors.name && (
               <h5 style={{ marginBottom: -24 }} className="form-error">
-                {errors.fname}
+                {errors.name}
               </h5>
             )}
           </div>
@@ -355,7 +357,11 @@ const Signup = ({ value, ...restProps }) => {
                         handleChange({
                           target: {
                             name: "phone",
-                            value: `${country.dialCode}${inputValue}`, // Concatenate country code and phone number
+                            value: `${inputValue}`,
+                          },
+                          target: {
+                            name: "country_code",
+                            value: `${country.dialCode}`,
                           },
                         });
                       }}
@@ -450,13 +456,10 @@ const Signup = ({ value, ...restProps }) => {
             )}
           </div>
 
-          {/* <a href="#" style={Styles.link1}>
-            Forgot Password?
-          </a> */}
           <Button
             variant="contained"
             color="primary"
-            type="submit"
+            type="submit" 
             fullWidth
             style={Styles.button}
           >
@@ -464,12 +467,14 @@ const Signup = ({ value, ...restProps }) => {
               Register
             </Typography>
           </Button>
-          <a href="/" style={Styles.link2}>
-            Already Have an account? &nbsp;
-            <span style={{ color: "#86191b", fontWeight: "bold" }}>
-              Login Now
-            </span>
-          </a>
+          <div style={Styles.link2div}>
+            <a href="/" style={Styles.link2}>
+              Already have an account? &nbsp;
+              <span style={{ color: "#86191b", fontWeight: "bold" }}>
+                Login Now
+              </span>
+            </a>
+          </div>
         </form>
       </Grid>
     </Grid>

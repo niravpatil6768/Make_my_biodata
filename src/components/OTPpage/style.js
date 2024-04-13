@@ -43,11 +43,11 @@ const styles = {
     // height:  window.innerWidth > 1290 ? "425px" : "108%",
     height:
       window.innerWidth == 1280 && window.innerHeight == 551
-        ? "130vh"
+        ? "132vh"
         : window.innerWidth > 1020 && window.innerWidth < 1275
         ? window.innerHeight == 1366
           ? "94vh"
-          : "96.5vh"
+          : "98vh"
         : window.innerWidth > 1279
         ? "107vh"
         : "94vh",
@@ -65,7 +65,7 @@ const styles = {
     flexDirection: "column",
     marginTop: 70,
     display: "flex",
-    padding: window.innerWidth >= 860 ? 125 : 50,
+    padding: window.innerWidth >= 860 ? 125 : window.innerWidth < 370 ? 10 : 50,
   },
 
   form: {
@@ -100,9 +100,16 @@ const styles = {
     border: "none",
     textDecoration: "none",
     display: "flex",
-    justifyContent: "end",
-    height: "50px",
+    justifyContent: "center",
+    height: "35%",
     fontSize: 14,
+  },
+
+  link2div: {
+    display: "flex",
+    justifyContent: "center",
+    height: "50px",
+    marginTop: 10,
   },
 };
 

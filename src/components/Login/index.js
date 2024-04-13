@@ -22,7 +22,9 @@ import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { Field, useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 import { signinSchema } from "../../schemas/signin";
+import { loginService } from "../../services/ApiService";
 const theme = createTheme();
 
 const CssTextField1 = styled(TextField)({
@@ -79,7 +81,9 @@ const initialValues = {
 const Login = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [focusedField, setFocusedField] = React.useState(false);
-  const [submitted, setSubmitted] = React.useState(false);
+  const [submitted, setSubmitted] = React.useState(true);
+  const [error, setError] = React.useState(null);
+  const navigate = useNavigate();
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -90,9 +94,34 @@ const Login = () => {
     useFormik({
       initialValues: initialValues,
       validationSchema: signinSchema,
-      onSubmit: (values) => {
-        setSubmitted(true);
-        console.log("values: ", values);
+      onSubmit: async (values) => {
+        try {
+          const response = await loginService(values);
+          // Check if the response has a 'status' property
+          if (response.status === "success") {
+            console.log("login successfully: ", response);
+            setError(null);
+            navigate("/homepage");
+          } else if (response.status === "error") {
+            // Check if the response has an 'error' property
+            console.log("login failed: ", response);
+            console.log(response.message);
+            const loginerror = response.message;
+            setError(loginerror);
+          }  else if (response.status === "fail") {
+            // Check if the response has an 'error' property
+            console.log("login failed: ", response);
+            console.log(response.message);
+            const loginerror = response.message;
+            setError(loginerror);
+          }
+        } catch (error) {
+          // Handle errors from the network request
+          setSubmitted(false);
+          console.log("error in login user: ", error);
+          const loginerror = error.message || "Network request failed";
+          setError(loginerror);
+        }
       },
     });
 
@@ -149,7 +178,7 @@ const Login = () => {
             Welcome back!
           </h2>
           <h2>Glad to see you, Again!</h2>
-
+          {error && <h5 style={{ color: "red" }}>{error}</h5>}
           <div>
             <CssTextField1
               variant="outlined"
@@ -234,9 +263,12 @@ const Login = () => {
             )}
           </div>
 
-          <a href="/forgetpassword" style={Styles.link}>
-            Forgot Password?
-          </a>
+          <div style={Styles.linkDiv}>
+            <a href="/forgetpassword" style={Styles.link}>
+              Forgot Password?
+            </a>
+          </div>
+
           <Button
             variant="contained"
             color="primary"
@@ -248,12 +280,14 @@ const Login = () => {
               Login
             </Typography>
           </Button>
-          <a href="/signup" style={Styles.link1}>
-            Don't Have an account? &nbsp;
-            <span style={{ color: "#86191b", fontWeight: "bold" }}>
-              Register Now
-            </span>
-          </a>
+          <div style={Styles.link2div}>
+            <a href="/signup" style={Styles.link2}>
+              Don't have an account? &nbsp;
+              <span style={{ color: "#86191b", fontWeight: "bold" }}>
+                Register Now
+              </span>
+            </a>
+          </div>
         </form>
       </Grid>
     </Grid>

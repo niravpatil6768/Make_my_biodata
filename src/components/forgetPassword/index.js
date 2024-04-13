@@ -28,6 +28,10 @@ import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { newPasswordSchema } from "../../schemas/newPassword";
 import PhoneInput from "react-phone-number-input";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase.config";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { Toaster, toast } from "react-hot-toast";
 import "react-international-phone/style.css";
 import {
   defaultCountries,
@@ -37,8 +41,9 @@ import {
 } from "react-international-phone";
 import { useFormik } from "formik";
 import { forgetPasswordSchema } from "../../schemas/forgetPassword";
-import { Link } from "react-router-dom";
-
+import { Link, resolvePath } from "react-router-dom";
+import { checkMobileUserService } from "../../services/ApiService";
+import { setUserId } from "../../utils/localStorage";
 
 const CssPhoneField = styled(TextField)({
   "& label.Mui-focused": {
@@ -67,21 +72,36 @@ const initialValues = {
 };
 
 const ForgetPassword = ({ value, ...restProps }) => {
-  
-
+  const [error, setError] = useState(null);
+  const [ph, setPh] = useState("");
+  const navigate = useNavigate();
   const { values, errors, handleChange, handleSubmit, handleBlur, touched } =
     useFormik({
       initialValues: initialValues,
       validationSchema: forgetPasswordSchema,
-      onSubmit: (values) => {
-        console.log("values:", values);
+      onSubmit: async (values) => {
+        // console.log("values:", values);
+        try {
+          const response = await checkMobileUserService(values);
+          if (response.status === "success") {
+            console.log("successfully find mobile user:", response);
+            setUserId(response.data);
+            setError(null);
+            navigate("/resetpassword");
+          } else if (response.status === "error") {
+            console.log("user not found: ", response);
+            setError(response.message);
+          }
+        } catch (error) {
+          console.log("error in finding user: ", error);
+        }
       },
     });
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
     usePhoneInput({
       defaultCountry: "in",
-      value: initialValues.phone,
+      value: initialValues.phone.replace(/\D/g, "").slice(-10),
       countries: defaultCountries,
       // onChange: (data) => {
       //   onChange(data.phone);
@@ -92,7 +112,7 @@ const ForgetPassword = ({ value, ...restProps }) => {
     handleChange({
       target: {
         name: "phone",
-        value: inputValue,
+        value: inputValue.replace(/\D/g, "").slice(-10),
       },
     });
   }, [inputValue]);
@@ -101,7 +121,38 @@ const ForgetPassword = ({ value, ...restProps }) => {
     const phoneNumberPattern = /^\d{10}$/;
     return phoneNumberPattern.test(phoneNumber);
   };
-  // console.log(Formik);
+
+  function onCaptchVerify() {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: (response) => {
+            onCall();
+          },
+          "expired-callback": () => {},
+        }
+      );
+    }
+  }
+
+  function onCall() {
+    onCaptchVerify();
+
+    const appVerifier = window.recaptchaVerifier;
+
+    const formatPh = inputValue;
+    signInWithPhoneNumber(auth, formatPh, appVerifier)
+      .then((confirmationResult) => {
+        window.confirmationResult = confirmationResult;
+        toast.success("otp send!");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <Grid container style={Styles.container}>
@@ -124,6 +175,9 @@ const ForgetPassword = ({ value, ...restProps }) => {
       <div style={Styles.blurOverlay}></div>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
+        <Toaster toastOptions={{ duration: 4000 }} />
+
+        <div id="recaptcha-container"></div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -161,8 +215,12 @@ const ForgetPassword = ({ value, ...restProps }) => {
                 with your account.
               </h5>
             </Typography>
+            {error && (
+              <h5 style={{ color: "red", marginTop: -5, marginBottom: 0 }}>
+                {error}
+              </h5>
+            )}
           </div>
-
           <CssPhoneField
             variant="outlined"
             label="Enter phone number"
@@ -267,23 +325,30 @@ const ForgetPassword = ({ value, ...restProps }) => {
             <h5 style={{ marginTop: 0 }}>{errors.phone}</h5>
           )}
 
-
           <Button
             variant="contained"
             color="primary"
             type="submit"
             fullWidth
+            onClick={onCall}
             style={Styles.Button}
           >
             <Typography style={{ fontSize: 20, fontWeight: "normal" }}>
               Send Code
             </Typography>
           </Button>
-          
-          <a href="/" style={Styles.link1}>
+          <div style={Styles.link2div}>
+            <a href="/" style={Styles.link2}>
+              Remember Password? &nbsp;
+              <span style={{ color: "#86191b", fontWeight: "bold" }}>
+                Login
+              </span>
+            </a>
+          </div>
+          {/* <a href="/" style={Styles.link1}>
             Remember Password? &nbsp;
             <span style={{ color: "#86191b", fontWeight: "bold" }}>Login</span>
-          </a>
+          </a> */}
         </form>
       </Grid>
     </Grid>

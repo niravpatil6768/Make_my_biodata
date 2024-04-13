@@ -23,7 +23,10 @@ import ImagePath from "../../assets/images";
 import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PhoneInput from "react-phone-number-input/input";
+import OtpInput from "otp-input-react";
 import { useFormik } from "formik";
+import { auth } from "../../firebase.config";
+import {RecaptchaVerifier} from "firebase/auth";
 const theme = createTheme();
 
 const CssTextField1 = styled(TextField)({
@@ -103,56 +106,71 @@ const CustomFormControl = styled(FormControl)({
 });
 
 const Otppage = () => {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [phone, setPhone] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  // const [showPassword, setShowPassword] = React.useState(false);
+  // const [phone, setPhone] = useState("");
+  // const [selectedCountry, setSelectedCountry] = useState(null);
+  // const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  // const handleMouseDownPassword = (event) => {
+  //   event.preventDefault();
+  // };
 
-  const { values, errors, handleSubmit, handleBlur, handleChange, touched } =
-    useFormik({
-      initialValues: { phone: ""},
-      onSubmit: (values) => {
-        console.log("values:", values);
-      },
-    });
+  // const { values, errors, handleSubmit, handleBlur, handleChange, touched } =
+  //   useFormik({
+  //     initialValues: { phone: "" },
+  //     onSubmit: (values) => {
+  //       console.log("values:", values);
+  //     },
+  //   });
 
-  // Define options for the country code select
-  const countryOptions = [
-    { value: "+1", label: "United States (+1)" },
-    { value: "+91", label: "India (+91)" },
-    // Add more options as needed
-  ];
+  // // Define options for the country code select
+  // const countryOptions = [
+  //   { value: "+1", label: "United States (+1)" },
+  //   { value: "+91", label: "India (+91)" },
+  //   // Add more options as needed
+  // ];
 
-  // Handle change in country code selection
-  const handleCountryChange = (selectedOption) => {
-    setSelectedCountry(selectedOption);
-  };
+  // // Handle change in country code selection
+  // const handleCountryChange = (selectedOption) => {
+  //   setSelectedCountry(selectedOption);
+  // };
 
-  const [otp, setOTP] = useState(["", "", "", ""]);
+  const [otp, setOtp] = useState("");
+  // const [showOtp, setShowOtp] = useState(false);
   const inputRefs = [useRef(), useRef(), useRef(), useRef()];
 
-  const handleChange1 = (index, value) => {
-    if (value.length === 1 && /^\d*$/.test(value)) {
-      const newOTP = [...otp];
-      newOTP[index] = value;
-      setOTP(newOTP);
-      if (index < 3) {
-        inputRefs[index + 1].current.focus();
-      }
-    } else if (value.length === 0) {
-      // Allow backspacing
-      const newOTP = [...otp];
-      newOTP[index] = "";
-      setOTP(newOTP);
-      if (index > 0) {
-        inputRefs[index - 1].current.focus();
-      }
+  // const handleChange1 = (index, value) => {
+  //   if (value.length === 1 && /^\d*$/.test(value)) {
+  //     const newOTP = [...otp];
+  //     newOTP[index] = value;
+  //     setOTP(newOTP);
+  //     if (index < 3) {
+  //       inputRefs[index + 1].current.focus();
+  //     }
+  //   } else if (value.length === 0) {
+  //     // Allow backspacing
+  //     const newOTP = [...otp];
+  //     newOTP[index] = "";
+  //     setOTP(newOTP);
+  //     if (index > 0) {
+  //       inputRefs[index - 1].current.focus();
+  //     }
+  //   }
+  // };
+
+  function onCaptchVerify() {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(
+        "recaptcha-container",
+        {
+          size: "invisible",
+          callback: (response) => {},
+          "expired-callback": () => {},
+        },
+        auth
+      );
     }
-  };
+  }
 
   return (
     <Grid container style={Styles.container}>
@@ -172,7 +190,6 @@ const Otppage = () => {
         </Grid>
       </Grid>
       <div style={Styles.blurOverlay}></div>
-
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
         <div
@@ -206,68 +223,80 @@ const Otppage = () => {
           </Typography>
         </div>
 
-<form>
-        <Grid
-          item
-          //   container
-          //   spacing={1}
-          //   alignItems="center"
-          //   justifyContent="space-between"
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginLeft: -10,
-          }}
-        >
-          {otp.map((digit, index) => (
-            <Grid
-              item
-              key={index}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 13,
-              }}
-            >
-              <CssTextField1
-                variant="outlined"
-                size="large"
-                value={digit}
-                onChange={(e) => handleChange1(index, e.target.value)}
-                inputRef={inputRefs[index]}
-                inputProps={{
-                  maxLength: 1,
-                  style: { textAlign: "center", zIndex: 1, fontSize: 14 },
+        <form>
+          <Grid
+            item
+            //   container
+            //   spacing={1}
+            //   alignItems="center"
+            //   justifyContent="space-between"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginLeft: -10,
+            }}
+          >
+            {/* {otp.map((digit, index) => (
+              <Grid
+                item
+                key={index}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: 13,
                 }}
-                style={{ width: window.innerWidth > 1030 ? 75 : 50 }}
-              />
-            </Grid>
-          ))}
-        </Grid>
+              >
+                <CssTextField1
+                  variant="outlined"
+                  size="large"
+                  value={digit}
+                  onChange={(e) => handleChange1(index, e.target.value)}
+                  inputRef={inputRefs[index]}
+                  inputProps={{
+                    maxLength: 1,
+                    style: { textAlign: "center", zIndex: 1, fontSize: 14 },
+                  }}
+                  style={{ width: window.innerWidth > 1030 ? 75 : 50 }}
+                />
+              </Grid>
+            ))} */}
+            <OtpInput
+              value={otp}
+              onChange={setOtp}
+              OTPLength={4}
+              otpType="number"
+              disabled={false}
+              autoFocus
+            >
+              {" "}
+            </OtpInput>
+          </Grid>
 
-        <Button
-          variant="contained"
-          color="primary"
-          type="submit"
-          fullWidth
-          style={Styles.button}
-        >
-          <Typography style={{ fontSize: 20, fontWeight: "normal" }}>
-            Verify
-          </Typography>
-        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            fullWidth
+            style={Styles.button}
+          >
+            <Typography style={{ fontSize: 20, fontWeight: "normal" }}>
+              Verify
+            </Typography>
+          </Button>
+          <div style={Styles.link2div}>
+            <a href="/" style={Styles.link2}>
+              Didn't received code? &nbsp;
+              <span style={{ color: "#86191b", fontWeight: "bold" }}>
+                Resend
+              </span>
+            </a>
+          </div>
         </form>
-        <a href="/" style={Styles.link2}>
-          Already Have an account? &nbsp;
-          <span style={{ color: "#86191b", fontWeight: "bold" }}>
-            Login Now
-          </span>
-        </a>
       </Grid>
     </Grid>
   );

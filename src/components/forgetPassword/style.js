@@ -109,6 +109,22 @@ const styles = {
     height: "50px",
     fontSize: 14,
   },
+
+  link2: {
+    color: "#1E232C",
+    border: "none",
+    textDecoration: "none",
+    display: "flex",
+    justifyContent: "center",
+    height: "35%",
+    fontSize: 14,
+  },
+
+  link2div: {
+    display: "flex",
+    justifyContent: "center",
+    height: "50px",
+  },
 };
 
 export default styles;

@@ -69,7 +69,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "end",
     display: "flex",
-    padding: window.innerWidth >= 860 ? 134 : 50,
+    padding: window.innerWidth >= 860 ? 134 : window.innerWidth < 300 ? 15 : 50,
     paddingTop: window.innerWidth >= 860 ? 200 : 50,
   },
 
