@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://139.59.7.235/MarriageBiodata/api/";
+const BASE_URL = "https://139.59.7.235/MarriageBiodata/api/";
 
 
 export const registerService = async (formData) => {
