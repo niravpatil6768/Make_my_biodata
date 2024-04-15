@@ -18,11 +18,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/otp" element={<Otppage />} />
+        {/* <Route path="/otp" element={<Otppage />} /> */}
         <Route path="/resetpassword" element={<NewPassword />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/changedpassword" element={<ChangedPassword />} />
-        <Route path="/homepage" element={<HomeScreen/>}/>
+        <Route path="/homepage" element={<HomeScreen />} />
       </Routes>
     </BrowserRouter>
   );

@@ -24,9 +24,12 @@ import { UseMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import PhoneInput from "react-phone-number-input/input";
 import OtpInput from "otp-input-react";
+import { OtpSchema } from "../../schemas/otpSchema";
 import { useFormik } from "formik";
 import { auth } from "../../firebase.config";
-import {RecaptchaVerifier} from "firebase/auth";
+import { RecaptchaVerifier } from "firebase/auth";
+
+import { getAuth, signInWithPhoneNumber } from "firebase/auth";
 const theme = createTheme();
 
 const CssTextField1 = styled(TextField)({
@@ -59,7 +62,7 @@ const CssTextField1 = styled(TextField)({
   },
 });
 
-const CssPhoneField = styled(PhoneInput)({
+const CssOTPField = styled(OtpInput)({
   "& label.Mui-focused": {
     color: "grey",
   },
@@ -79,6 +82,12 @@ const CssPhoneField = styled(PhoneInput)({
     "&.Mui-focused fieldset": {
       borderColor: "#f35491",
     },
+  },
+});
+
+const StyledOtpInput = styled(OtpInput)({
+  "&:hover fieldset": {
+    borderColor: "red",
   },
 });
 
@@ -105,6 +114,9 @@ const CustomFormControl = styled(FormControl)({
   },
 });
 
+const initialValues = {
+  otp: "",
+};
 const Otppage = () => {
   // const [showPassword, setShowPassword] = React.useState(false);
   // const [phone, setPhone] = useState("");
@@ -135,16 +147,38 @@ const Otppage = () => {
   //   setSelectedCountry(selectedOption);
   // };
 
+  // const [otp, setOTP] = useState(["", "", "", "", "", ""]);
   const [otp, setOtp] = useState("");
-  // const [showOtp, setShowOtp] = useState(false);
-  const inputRefs = [useRef(), useRef(), useRef(), useRef()];
+  const [showOtp, setShowOtp] = useState(false);
+  const inputRefs = [
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+    useRef(),
+  ];
+
+  const { values, handleBlur, handleSubmit, handleChange, touched, errors } =
+    useFormik({
+      initialValues: initialValues,
+      validationSchema: OtpSchema,
+      onSubmit: async () => {
+        try {
+          console.log(values.otp);
+          await window.confirmationResult.confirm(values.otp); // Confirm the OTP
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    });
 
   // const handleChange1 = (index, value) => {
   //   if (value.length === 1 && /^\d*$/.test(value)) {
   //     const newOTP = [...otp];
   //     newOTP[index] = value;
   //     setOTP(newOTP);
-  //     if (index < 3) {
+  //     if (index < 5) {
   //       inputRefs[index + 1].current.focus();
   //     }
   //   } else if (value.length === 0) {
@@ -158,19 +192,32 @@ const Otppage = () => {
   //   }
   // };
 
-  function onCaptchVerify() {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: (response) => {},
-          "expired-callback": () => {},
-        },
-        auth
-      );
+  function onOTPVerify(e) {
+    e.preventDefault();
+    console.log(otp);
+    if (window.confirmationResult) {
+      window.confirmationResult
+        .confirm(otp)
+        .then(async (res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.log("Confirmation result is not available");
     }
   }
+
+  // const handleVerifyOTP = async () => {
+  //   try {
+  //     const auth = getAuth();
+  //     await signInWithPhoneNumber(auth, verificationId, otp);
+  //     console.log("User signed in successfully");
+  //   } catch (error) {
+  //     console.error("Error verifying OTP:", error);
+  //   }
+  // };
 
   return (
     <Grid container style={Styles.container}>
@@ -223,7 +270,7 @@ const Otppage = () => {
           </Typography>
         </div>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <Grid
             item
             //   container
@@ -265,22 +312,33 @@ const Otppage = () => {
                 />
               </Grid>
             ))} */}
-            <OtpInput
-              value={otp}
-              onChange={setOtp}
-              OTPLength={4}
-              otpType="number"
-              disabled={false}
+            {/* <StyledOtpInput
+              onChange={handleChange}
+              id="otp"
+              name="otp"
+              onBlur={handleBlur}
+              value={values.otp}
+              OTPLength={6}
               autoFocus
-            >
-              {" "}
-            </OtpInput>
+              otpType="number"
+              // isInputNum={true} // isInputNum instead of otpType
+              // separator={<span>-</span>} // Separator between input fields
+            /> */}
+            {/* <input
+            type="text"
+            id="otp"
+            name="otp"
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.otp}
+          /> */}
+            {touched.otp && errors.otp && <div>{errors.otp}</div>}
           </Grid>
-
           <Button
             variant="contained"
             color="primary"
             type="submit"
+            // onClick={onOTPVerify}
             fullWidth
             style={Styles.button}
           >

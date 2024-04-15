@@ -20,8 +20,10 @@ import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
+import { useNavigate } from "react-router-dom";
 import ImagePath from "../../assets/images";
 import { registerService } from "../../services/ApiService";
+import { Toaster, toast } from "react-hot-toast";
 import "react-international-phone/style.css";
 import {
   defaultCountries,
@@ -52,6 +54,7 @@ const CssTextField1 = styled(TextField)({
     },
     "&.Mui-focused fieldset": {
       borderColor: "#f35491",
+      // backgroundColor: "grey",
     },
   },
 });
@@ -103,6 +106,7 @@ const CustomFormControl = styled(FormControl)({
 
 const Signup = ({ value, ...restProps }) => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [error, setError] = React.useState(null);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const [focusedField, setFocusedField] = useState("");
   const [initialValues, setInitialValues] = useState({
@@ -113,6 +117,7 @@ const Signup = ({ value, ...restProps }) => {
     password: "",
     country_code: "",
   });
+  const navigate = useNavigate();
 
   // Use useFormik hook to manage form state and validation
   const {
@@ -128,9 +133,24 @@ const Signup = ({ value, ...restProps }) => {
     validationSchema: signUpSchema,
     onSubmit: async (values) => {
       try {
-        console.log("Form values:", values.phone);
         const response = await registerService(values);
-        console.log("User registered successfully:", response);
+        if (response.status === "success") {
+          toast.success("User created successfully!",{
+            duration: 5000, // Duration in milliseconds
+          position: "top-right", // Position of the toast  
+          }
+          );
+          console.log("User registered successfully:", response);
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
+        } else if (response.status === "error") {
+          console.log("error in create user:", response);
+          setError(response.message);
+        } else if (response.status === "fail") {
+          console.log("error in create user:", response);
+          setError(response.message);
+        }
       } catch (error) {
         console.error("Error submitting form:", error);
       }
@@ -188,7 +208,11 @@ const Signup = ({ value, ...restProps }) => {
       <div style={Styles.blurOverlay}></div>
 
       <Grid lg={6} md={6} sm={5.5} xs={12} style={Styles.grid2}>
+        <div>
+          <Toaster toastOptions={{ duration: 2000 }} />
+        </div>
         <form
+          autocomplete="false"
           style={Styles.form}
           onSubmit={(e) => {
             e.preventDefault(); // Prevent default form submission
@@ -199,7 +223,7 @@ const Signup = ({ value, ...restProps }) => {
             Hello! Register to
           </h2>
           <h2>Get Started</h2>
-
+          {error && <h5 style={{ color: "red" }}>{error}</h5>}
           <div style={{ marginBottom: 25 }}>
             <CssTextField1
               variant="outlined"
@@ -208,7 +232,7 @@ const Signup = ({ value, ...restProps }) => {
               margin="normal"
               name="username"
               id="username"
-              autoComplete="off"
+              autoComplete="new-password"
               value={values.username}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -237,7 +261,7 @@ const Signup = ({ value, ...restProps }) => {
               margin="normal"
               name="name"
               id="name"
-              autoComplete="off"
+              autoComplete="false"
               value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -266,7 +290,7 @@ const Signup = ({ value, ...restProps }) => {
               name="email"
               id="email"
               style={{ height: "7px" }}
-              autoComplete="off"
+              autoComplete="new-password"
               value={values.email}
               onChange={handleChange}
               onBlur={handleBlur}
@@ -294,6 +318,7 @@ const Signup = ({ value, ...restProps }) => {
               fullWidth
               id="phone"
               name="phone"
+              autoComplete="new-password"
               placeholder="Enter phone number"
               value={inputValue}
               onChange={handlePhoneValueChange}
@@ -459,7 +484,7 @@ const Signup = ({ value, ...restProps }) => {
           <Button
             variant="contained"
             color="primary"
-            type="submit" 
+            type="submit"
             fullWidth
             style={Styles.button}
           >

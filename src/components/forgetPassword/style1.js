@@ -1,4 +1,4 @@
-const styles = {
+const styles1 = {
   container: {
     height: "100vh",
   },
@@ -63,9 +63,15 @@ const styles = {
     alignItems: "start",
     justifyContent: "start",
     flexDirection: "column",
-    marginTop: 70,
+    marginTop:
+      window.innerWidth > 700 &&
+      window.innerWidth < 1050 &&
+      window.innerHeight > 700
+        ? 200
+        : 70,
     display: "flex",
-    padding: window.innerWidth >= 860 ? 125 : window.innerWidth < 370 ? 10 : 50,
+
+    padding: window.innerWidth >= 860 ? 125 : window.innerWidth < 370 ? 10 : 30,
   },
 
   form: {
@@ -93,6 +99,7 @@ const styles = {
     boxShadow: "none",
     textTransform: "NONE",
     marginBottom: 15,
+    marginLeft: -8,
   },
 
   link2: {
@@ -103,6 +110,7 @@ const styles = {
     justifyContent: "center",
     height: "35%",
     fontSize: 14,
+    cursor: 'pointer'
   },
 
   link2div: {
@@ -111,8 +119,6 @@ const styles = {
     height: "50px",
     marginTop: 10,
   },
-
-  
 };
 
-export default styles;
+export default styles1;

@@ -102,7 +102,10 @@ const Login = () => {
             console.log("login successfully: ", response);
             setError(null);
             navigate("/homepage");
-          } else if (response.status === "error") {
+          } else if (
+            response.status === "error" ||
+            response.status === "fail"
+          ) {
             // Check if the response has an 'error' property
             console.log("login failed: ", response);
             console.log(response.message);
