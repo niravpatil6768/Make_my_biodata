@@ -515,7 +515,7 @@ const ForgetPassword = ({ value, ...restProps }) => {
                 </Typography>
               </Button>
               <div style={Styles1.link2div}>
-                <a style={Styles1.link2} onClick={onCall}>
+                <a style={Styles1.link2} onClick={handleResendClick}>
                   Didn't received code? &nbsp;
                   <span style={{ color: "#86191b", fontWeight: "bold" }}>
                     Resend
