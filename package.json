@@ -1,5 +1,4 @@
 {
-  "homepage": "http://139.59.7.235/betterhalf/",
   "name": "makemybiodata",
   "version": "0.1.0",
   "private": true,
@@ -37,7 +36,7 @@
     "eject": "react-scripts eject"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   },
   "eslintConfig": {
     "extends": [
