@@ -94,32 +94,36 @@ const Login = () => {
     useFormik({
       initialValues: initialValues,
       validationSchema: signinSchema,
-      onSubmit: async (values) => {
-        try {
-          const response = await loginService(values);
-          // Check if the response has a 'status' property
-          if (response.status === "success") {
-            console.log("login successfully: ", response);
-            setError(null);
-            navigate("/homepage");
-          } else if (
-            response.status === "error" ||
-            response.status === "fail"
-          ) {
-            // Check if the response has an 'error' property
-            console.log("login failed: ", response);
-            console.log(response.message);
-            const loginerror = response.message;
-            setError(loginerror);
-          }
-        } catch (error) {
-          // Handle errors from the network request
-          setSubmitted(false);
-          console.log("error in login user: ", error);
-          const loginerror = error.message || "Network request failed";
-          setError(loginerror);
-        }
-      },
+      onSubmit: (values) => {
+        console.log(values);
+        navigate("/homepage");
+      }
+      // onSubmit: async (values) => {
+      //   try {
+      //     const response = await loginService(values);
+      //     // Check if the response has a 'status' property
+      //     if (response.status === "success") {
+      //       console.log("login successfully: ", response);
+      //       setError(null);
+      //       navigate("/homepage");
+      //     } else if (
+      //       response.status === "error" ||
+      //       response.status === "fail"
+      //     ) {
+      //       // Check if the response has an 'error' property
+      //       console.log("login failed: ", response);
+      //       console.log(response.message);
+      //       const loginerror = response.message;
+      //       setError(loginerror);
+      //     }
+      //   } catch (error) {
+      //     // Handle errors from the network request
+      //     setSubmitted(false);
+      //     console.log("error in login user: ", error);
+      //     const loginerror = error.message || "Network request failed";
+      //     setError(loginerror);
+      //   }
+      // },
     });
 
   // Custom handleBlur function to update the focused field
