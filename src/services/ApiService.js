@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = "http://139.59.7.235/MarriageBiodata/api/";
+// const BASE_URL = "/api/proxy";
 
 export const registerService = async (formData) => {
   try {
