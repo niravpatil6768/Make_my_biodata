@@ -32,6 +32,7 @@ import { Toaster, toast } from "react-hot-toast";
 import PropTypes from "prop-types";
 import { Input as BaseInput } from "@mui/base/Input";
 import { Box } from "@mui/system";
+
 import "react-international-phone/style.css";
 import {
   defaultCountries,
@@ -80,31 +81,35 @@ const ForgetPassword = ({ value, ...restProps }) => {
   const [otp, setOtp] = useState("");
   const [ph, setPh] = useState("");
   const navigate = useNavigate();
+  
 
   const { values, errors, handleChange, handleSubmit, handleBlur, touched } =
     useFormik({
       initialValues: initialValues,
       validationSchema: forgetPasswordSchema,
-      onSubmit: async (values) => {
-        // console.log("values:", values);
-        try {
-          const response = await checkMobileUserService(values);
-          if (response.status === "success") {
-            console.log("successfully find mobile user:", response);
-            setUserId(response.data);
-            setError(null);
-            onCall();
-            // setTimeout(() => {
-            //   navigate("/otp");
-            // }, 10000);
-          } else if (response.status === "error") {
-            console.log("user not found: ", response);
-            setError(response.message);
-          }
-        } catch (error) {
-          console.log("error in finding user: ", error);
-        }
+      onSubmit: (values) => {
+        setOtpSend(true);
       },
+      // onSubmit: async (values) => {
+      //   // console.log("values:", values);
+      //   try {
+      //     const response = await checkMobileUserService(values);
+      //     if (response.status === "success") {
+      //       console.log("successfully find mobile user:", response);
+      //       setUserId(response.data);
+      //       setError(null);
+      //       onCall();
+      //       // setTimeout(() => {
+      //       //   navigate("/otp");
+      //       // }, 10000);
+      //     } else if (response.status === "error") {
+      //       console.log("user not found: ", response);
+      //       setError(response.message);
+      //     }
+      //   } catch (error) {
+      //     console.log("error in finding user: ", error);
+      //   }
+      // },
     });
 
   const { inputValue, handlePhoneValueChange, inputRef, country, setCountry } =
@@ -195,6 +200,11 @@ const ForgetPassword = ({ value, ...restProps }) => {
 
   const handleResendClick = () => {
     setOtpSend(false);
+  };
+
+  const handleVerify = () => {
+    // Redirect to "/resetpassword" when the button is clicked
+    navigate("/resetpassword");
   };
 
   if (!otpSend) {
@@ -505,7 +515,8 @@ const ForgetPassword = ({ value, ...restProps }) => {
                 variant="contained"
                 color="primary"
                 type="submit"
-                onClick={onOTPVerify}
+                onClick={handleVerify}
+                // onClick={onOTPVerify}
                 disabled={!otpSend} // Disable the button if otpsend is false
                 fullWidth
                 style={Styles1.button}

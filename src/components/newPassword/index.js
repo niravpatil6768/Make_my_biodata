@@ -73,22 +73,25 @@ const NewPassword = () => {
     useFormik({
       initialValues: initialValues,
       validationSchema: newPasswordSchema,
-      onSubmit: async (values) => {
-        console.log("values: ", values);
-        try {
-          console.log("in service");
-          const response = await resetPasswordService(values);
-          if (response.status === "success") {
-            console.log("successfully changed password: ", response);
-            navigate("/changedpassword");
-          } else if (response.status === "fail") {
-            console.log("error in change password: ", response);
-            setError(response.message);
-          }
-        } catch (error) {
-          console.log("error in change password: ", error);
-        }
-      },
+      onSubmit: (values) => {
+        navigate("/changedpassword");
+      }
+      // onSubmit: async (values) => {
+      //   console.log("values: ", values);
+      //   try {
+      //     console.log("in service");
+      //     const response = await resetPasswordService(values);
+      //     if (response.status === "success") {
+      //       console.log("successfully changed password: ", response);
+      //       navigate("/changedpassword");
+      //     } else if (response.status === "fail") {
+      //       console.log("error in change password: ", response);
+      //       setError(response.message);
+      //     }
+      //   } catch (error) {
+      //     console.log("error in change password: ", error);
+      //   }
+      // },
     });
 
   // console.log(Formik);
