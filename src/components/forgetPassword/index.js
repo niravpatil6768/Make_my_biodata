@@ -394,7 +394,7 @@ const ForgetPassword = ({ value, ...restProps }) => {
                 </Typography>
               </Button>
               <div style={Styles.link2div}>
-                <a href="/" style={Styles.link2}>
+                <a href="/login" style={Styles.link2}>
                   Remember Password? &nbsp;
                   <span style={{ color: "#86191b", fontWeight: "bold" }}>
                     Login

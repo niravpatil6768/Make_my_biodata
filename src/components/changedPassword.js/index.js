@@ -80,11 +80,11 @@ const ChangedPassword = () => {
             </Typography>
           </div>
 
-          <Link to={"/"}>
+          <Link to={"/login"}>
             <Button
               variant="contained"
               color="primary"
-              to={`/`}
+              to={`/login`}
               fullWidth
               style={Styles.Button}
             >

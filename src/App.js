@@ -8,6 +8,7 @@ import NewPassword from "./components/newPassword";
 import ForgetPassword from "./components/forgetPassword";
 import ChangedPassword from "./components/changedPassword.js";
 import HomeScreen from "./components/HomeScreen/index.js";
+import LandingPage from "./components/LandingPage/index.js";
 
 function App() {
   return (
@@ -16,9 +17,9 @@ function App() {
     // </div>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        {/* <Route path="/otp" element={<Otppage />} /> */}
         <Route path="/resetpassword" element={<NewPassword />} />
         <Route path="/forgetpassword" element={<ForgetPassword />} />
         <Route path="/changedpassword" element={<ChangedPassword />} />
