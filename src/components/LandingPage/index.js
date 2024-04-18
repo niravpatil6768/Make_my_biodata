@@ -188,6 +188,7 @@ const LandingPage = ({ value, ...restProps }) => {
   };
 
   return (
+    <>
     <Grid
       container
       style={Styles.container}
@@ -272,6 +273,120 @@ const LandingPage = ({ value, ...restProps }) => {
         </div>
       </Grid>
     </Grid>
+    <Grid
+    container
+    style={{
+      height: "100vh",
+    }}
+    sx={{
+      display: {
+        xs: "flex",
+        sm: "none",
+        display: "flex",
+        justifyContent: "center",
+      },
+    }}
+  >
+    <Grid
+      container
+      lg={12}
+      md={12}
+      sm={12}
+      style={{
+        display: "flex",
+        alignItems: "start",
+        justifyContent: "center",
+        alignContent: "center",
+        height: "13vh",
+        // marginLeft: window.innerWidth < 330 ? 50 : 0,
+      }}
+    >
+      <img src={ImagePath.Icon} style={Styles.imageMobile1}></img>
+    </Grid>
+    <Grid container style={Styles.gridMobile1}>
+      <Grid lg={12} md={12} sm={12} style={Styles.grid12}>
+        <img src={ImagePath.Iphone} style={Styles.imageMobile2}></img>
+        <img src={ImagePath.Card} style={Styles.image3}></img>
+        <div style={Styles.blurOverlay2}></div>
+      </Grid>
+    </Grid>
+    <Grid
+      style={{
+        height: "20vh",
+        display: "flex",
+        padding: 15,
+        display: "flex",
+        // marginLeft: window.innerWidth < 330 ? 40 : 0,
+        flexDirection: "row",
+      }}
+      container
+    >
+      <Typography
+        style={{
+          fontSize: 25,
+          color: "#b32d2e",
+          fontWeight: "bolder",
+          marginBottom: -7,
+        }}
+      >
+        Welcome to <br /> Make my BIO DATA
+      </Typography>
+      <br />
+      {/* <Typography
+        style={{
+          fontSize: 25,
+          color: "#b32d2e",
+          fontWeight: "bolder",
+        }}
+      >
+        Make my BIO DATA
+      </Typography> */}
+      <Typography style={{ fontSize: 14, color: "grey", marginBottom: 0 }}>
+        Lorem ipsum is simply dummy text of the printing and typesetting
+        industry
+      </Typography>
+    </Grid>
+    <Grid
+      style={{
+        height: "18vh",
+        display: "flex",
+        padding: 5,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignContent: "center",
+      }}
+      container
+    >
+      <Link to={"/login"}>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+          style={Styles.ButtonMobile1}
+        >
+          <Typography style={{ fontSize: 19, fontWeight: "normal" }}>
+            Login
+          </Typography>
+        </Button>
+      </Link>
+      <Link to={"/signup"}>
+        <Button
+          variant="contained"
+          color="primary"
+          type="submit"
+          fullWidth
+          style={Styles.ButtonMobile2}
+        >
+          <Typography style={{ fontSize: 19, fontWeight: "normal" }}>
+            Signup
+          </Typography>
+        </Button>
+      </Link>
+    </Grid>
+  </Grid>
+  </>
   );
 };
 
